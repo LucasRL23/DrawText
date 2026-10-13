@@ -58,6 +58,7 @@
             android:theme="@style/AppTheme"
             android:exported="false"/>
 
+        <activity android:name=".PrintLettersMainActivity" android:exported="false" />
     </application>
 
 </manifest>

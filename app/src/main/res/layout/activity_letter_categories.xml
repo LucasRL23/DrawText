@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    app:theme="@style/AppTheme"
+    android:layout_height="match_parent"
+    android:background="@color/cardview_light_background">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            android:layout_weight="1" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/main_bg_2"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:paddingLeft="5dp"
+            android:paddingStart="5dp"
+            android:paddingRight="5dp"
+            android:paddingEnd="5dp"
+            android:orientation="vertical">
+
+
+
+            <androidx.cardview.widget.CardView
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:id="@+id/card_letter_vowel"
+                app:cardElevation="4dp"
+                android:layout_margin="16dp"
+                android:background="@drawable/card_bg"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="10dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:src="@drawable/letters"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:background="@drawable/card_bg"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="top">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="top"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:layout_margin="10sp"
+                            android:textColor="#343434"
+                            android:text="Vogais"/>
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_weight="1"/>
+
+                        <CheckBox
+                            android:id="@+id/cb_enable_sound_vowels"
+                            android:layout_width="wrap_content"
+                            android:layout_height="51dp"
+                            android:layout_margin="10sp"
+                            android:checked="false"
+                            android:visibility="gone"
+                            android:padding="4dp"
+                            android:text="Utilizar som"
+                            android:textColor="#343434"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </FrameLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:id="@+id/card_letter_consonant"
+                app:cardElevation="4dp"
+                android:layout_margin="14sp"
+                android:background="@drawable/card_bg"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:visibility="visible"
+                app:cardCornerRadius="10dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:src="@drawable/letters"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:background="@drawable/card_bg"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="top">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="top"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:layout_margin="10sp"
+                            android:textColor="#343434"
+                            android:text="Consoantes"/>
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_weight="1"/>
+
+                        <CheckBox
+                            android:id="@+id/cb_enable_sound_consonants"
+                            android:layout_width="wrap_content"
+                            android:layout_height="51dp"
+                            android:layout_margin="10sp"
+                            android:checked="false"
+                            android:padding="4dp"
+                            android:visibility="gone"
+                            android:text="Utilizar som"
+                            android:textColor="#343434"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                </FrameLayout>
+
+
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>

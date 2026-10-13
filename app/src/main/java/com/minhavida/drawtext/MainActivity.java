@@ -31,32 +31,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final CardView cardLetterVowel = findViewById(R.id.card_letter_vowel);
-        cardLetterVowel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent  = new Intent(MainActivity.this,
-                        PrintLetterVowelMainActivity.class);
-                CheckBox cb = cardLetterVowel.findViewById(R.id.cb_enable_sound_vowels);
-                intent.putExtra("enable_auto_sound", cb.isChecked());
-                startActivity(intent);
-                //finish();
-            }
-        });
-
-        final CardView cardLetterConsonant = findViewById(R.id.card_letter_consonant);
-        cardLetterConsonant.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent  = new Intent(MainActivity.this,
-                        PrintLetterConsonantMainActivity.class);
-                CheckBox cb = cardLetterConsonant.findViewById(R.id.cb_enable_sound_consonants);
-                intent.putExtra("enable_auto_sound", cb.isChecked());
-                startActivity(intent);
-                //finish();
-            }
-        });
+        findViewById(R.id.card_print_letters).setOnClickListener(v ->
+                startActivity(new Intent(this, PrintLettersMainActivity.class)));
+        findViewById(R.id.card_cursive_letters).setOnClickListener(v ->
+                new androidx.appcompat.app.AlertDialog.Builder(this)
+                        .setTitle(R.string.cursive_letters)
+                        .setMessage(R.string.cursive_coming_soon)
+                        .setPositiveButton(android.R.string.ok, null)
+                        .show());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

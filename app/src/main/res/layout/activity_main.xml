@@ -114,7 +114,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
-                android:id="@+id/card_letter_vowel"
+                android:id="@+id/card_print_letters"
                 app:cardElevation="4dp"
                 android:layout_margin="16dp"
                 android:background="@drawable/card_bg"
@@ -150,7 +150,7 @@
                             android:textStyle="bold"
                             android:layout_margin="10sp"
                             android:textColor="#343434"
-                            android:text="Vogais"/>
+                            android:text="@string/print_letters"/>
 
                         <View
                             android:layout_width="0dp"
@@ -180,7 +180,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
-                android:id="@+id/card_letter_consonant"
+                android:id="@+id/card_cursive_letters"
                 app:cardElevation="4dp"
                 android:layout_margin="14sp"
                 android:background="@drawable/card_bg"
@@ -217,7 +217,7 @@
                             android:textStyle="bold"
                             android:layout_margin="10sp"
                             android:textColor="#343434"
-                            android:text="Consoantes"/>
+                            android:text="@string/cursive_letters"/>
 
                         <View
                             android:layout_width="0dp"
