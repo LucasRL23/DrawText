@@ -1,37 +1,38 @@
 package com.minhavida.drawtext;
 
 import android.content.Intent;
-import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
-public class LetterVowelMainActivity extends AppCompatActivity
-{
+public class PrintLetterConsonantMainActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_letter_vowel);
+        setContentView(R.layout.activity_print_letter_consonant_main);
 
-        final char[] letters = {'A', 'E', 'I', 'O', 'U'};
-        final int[] letters_class = {0, 4, 8, 14, 20};
+        final char[] letters = {'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N',
+                'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'};
+        final int[] letters_class = {1, 2, 3, 5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19,
+                21, 22, 23, 24, 25, 26};
 
         final boolean autoSoundEnabled = getIntent().getBooleanExtra("enable_auto_sound",
                 false);
 
-        for (int k = 0; k < 5; k++)
+        for (int k = 0; k < letters.length; k++)
         {
-            int viewId = getResources().getIdentifier("letter_"+letters[k], "id",
-                    this.getPackageName());
+            int viewId = getResources().getIdentifier("letter_"+letters[k], "id", this.getPackageName());
             final int finalK = k;
             findViewById(viewId).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(LetterVowelMainActivity.this,
-                            LetterVowelActivity.class);
+                    Intent intent = new Intent(PrintLetterConsonantMainActivity.this,
+                            PrintLetterConsonantActivity.class);
                     intent.putExtra("letter", letters_class[finalK]);
                     intent.putExtra("auto_sound_enabled", autoSoundEnabled);
                     startActivity(intent);

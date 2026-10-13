@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public class LetterConsonantActivity extends AppCompatActivity {
+public class PrintLetterConsonantActivity extends AppCompatActivity {
 
     private CanvasView canvasView;
     private int number;
@@ -52,7 +52,7 @@ public class LetterConsonantActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_letter_consonant);
+        setContentView(R.layout.activity_print_letter_consonant);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -89,37 +89,37 @@ public class LetterConsonantActivity extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                Log.d("LetterConsonantActivity", "========================================");
-                Log.d("LetterConsonantActivity", "🎯 USUÁRIO CLICOU EM VERIFICAR");
-                Log.d("LetterConsonantActivity", "Letra esperada: " + arr[number]);
-                Log.d("LetterConsonantActivity", "Nível de dificuldade: " + String.format("%.2f%%", DIFFICULTY_LEVEL * 100));
-                Log.d("LetterConsonantActivity", "========================================");
+                Log.d("PrintLetterConsonantActivity", "========================================");
+                Log.d("PrintLetterConsonantActivity", "🎯 USUÁRIO CLICOU EM VERIFICAR");
+                Log.d("PrintLetterConsonantActivity", "Letra esperada: " + arr[number]);
+                Log.d("PrintLetterConsonantActivity", "Nível de dificuldade: " + String.format("%.2f%%", DIFFICULTY_LEVEL * 100));
+                Log.d("PrintLetterConsonantActivity", "========================================");
                 
                 float[] arrayImage = canvasView.getPixelsArray();
                 Classification cls = tfClassifier.recognize(arrayImage, 1);
 
                 //saveStatisticsToSpreadSheet(arr[number], cls.getLabel(), cls.getConf(), DIFFICULTY_LEVEL);
 
-                Log.d("LetterConsonantActivity", "========================================");
-                Log.d("LetterConsonantActivity", "📝 COMPARAÇÃO:");
-                Log.d("LetterConsonantActivity", "  Esperado: " + arr[number]);
-                Log.d("LetterConsonantActivity", "  Predito: " + cls.getLabel());
-                Log.d("LetterConsonantActivity", "  Confiança: " + String.format("%.2f%%", cls.getConf() * 100));
-                Log.d("LetterConsonantActivity", "  Threshold: " + String.format("%.2f%%", DIFFICULTY_LEVEL * 100));
+                Log.d("PrintLetterConsonantActivity", "========================================");
+                Log.d("PrintLetterConsonantActivity", "📝 COMPARAÇÃO:");
+                Log.d("PrintLetterConsonantActivity", "  Esperado: " + arr[number]);
+                Log.d("PrintLetterConsonantActivity", "  Predito: " + cls.getLabel());
+                Log.d("PrintLetterConsonantActivity", "  Confiança: " + String.format("%.2f%%", cls.getConf() * 100));
+                Log.d("PrintLetterConsonantActivity", "  Threshold: " + String.format("%.2f%%", DIFFICULTY_LEVEL * 100));
 
                 boolean isConfusingPair = isConfusingLetterPair(arr[number], cls.getLabel());
                 double effectiveThreshold = DIFFICULTY_LEVEL;
                 
                 if (isConfusingPair) {
                     effectiveThreshold = Math.min(0.999, DIFFICULTY_LEVEL + 0.03);
-                    Log.d("LetterConsonantActivity", "  ⚠️  Par confuso detectado! Threshold ajustado: " + 
+                    Log.d("PrintLetterConsonantActivity", "  ⚠️  Par confuso detectado! Threshold ajustado: " + 
                           String.format("%.2f%%", effectiveThreshold * 100));
                 }
 
                 if (cls.getLabel().equals(arr[number]) && cls.getConf() > effectiveThreshold)
                 {
-                    Log.i("LetterConsonantActivity", "✅ RESPOSTA CORRETA!");
-                    Log.d("LetterConsonantActivity", "========================================");
+                    Log.i("PrintLetterConsonantActivity", "✅ RESPOSTA CORRETA!");
+                    Log.d("PrintLetterConsonantActivity", "========================================");
                     
                     mediaPlayer = MediaPlayer.create(view.getContext(), R.raw.correct_answer);
                     mediaPlayer.setVolume(0.025f, 0.025f);
@@ -148,14 +148,14 @@ public class LetterConsonantActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    Log.w("LetterConsonantActivity", "❌ RESPOSTA INCORRETA!");
+                    Log.w("PrintLetterConsonantActivity", "❌ RESPOSTA INCORRETA!");
                     if (!cls.getLabel().equals(arr[number])) {
-                        Log.w("LetterConsonantActivity", "  Motivo: Letra diferente");
+                        Log.w("PrintLetterConsonantActivity", "  Motivo: Letra diferente");
                     }
                     if (cls.getConf() <= DIFFICULTY_LEVEL) {
-                        Log.w("LetterConsonantActivity", "  Motivo: Confiança insuficiente");
+                        Log.w("PrintLetterConsonantActivity", "  Motivo: Confiança insuficiente");
                     }
-                    Log.d("LetterConsonantActivity", "========================================");
+                    Log.d("PrintLetterConsonantActivity", "========================================");
                     
                     imageViewFeedback.setImageDrawable(VectorDrawableCompat.create(getResources(),
                             R.drawable.dislike, null));

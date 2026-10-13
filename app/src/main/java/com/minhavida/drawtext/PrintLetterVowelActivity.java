@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public class LetterVowelActivity extends AppCompatActivity {
+public class PrintLetterVowelActivity extends AppCompatActivity {
 
     private CanvasView canvasView;
     private int number;
@@ -53,7 +53,7 @@ public class LetterVowelActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.letter_vowel_activity);
+        setContentView(R.layout.activity_print_letter_vowel);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar bar = getSupportActionBar();
@@ -71,8 +71,8 @@ public class LetterVowelActivity extends AppCompatActivity {
         if (autoSoundEnabled)
         {
             int drawableNumberId = getResources().getIdentifier("som_"+number,
-                    "raw", LetterVowelActivity.this.getPackageName());
-            MediaPlayer mediaPlayer=MediaPlayer.create(LetterVowelActivity.this,
+                    "raw", PrintLetterVowelActivity.this.getPackageName());
+            MediaPlayer mediaPlayer=MediaPlayer.create(PrintLetterVowelActivity.this,
                     drawableNumberId);
             mediaPlayer.setVolume(0.15f, 0.15f);
             mediaPlayer.start();
@@ -92,8 +92,8 @@ public class LetterVowelActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 int drawableNumberId = getResources().getIdentifier("som_"+number,
-                        "raw", LetterVowelActivity.this.getPackageName());
-                MediaPlayer mediaPlayer=MediaPlayer.create(LetterVowelActivity.this,
+                        "raw", PrintLetterVowelActivity.this.getPackageName());
+                MediaPlayer mediaPlayer=MediaPlayer.create(PrintLetterVowelActivity.this,
                         drawableNumberId);
                 mediaPlayer.setVolume(0.15f, 0.15f);
                 mediaPlayer.start();
@@ -127,11 +127,11 @@ public class LetterVowelActivity extends AppCompatActivity {
                 
                 if (arr[number].equals("O")) {
                     effectiveThreshold = Math.max(0.5, DIFFICULTY_LEVEL - 0.15);
-                    Log.d("LetterVowelActivity", "ℹ️ Letra O - threshold reduzido: " + 
+                    Log.d("PrintLetterVowelActivity", "ℹ️ Letra O - threshold reduzido: " + 
                           String.format("%.2f%%", effectiveThreshold * 100));
                 } else if (isConfusingPair) {
                     effectiveThreshold = Math.min(0.999, DIFFICULTY_LEVEL + 0.03);
-                    Log.d("LetterVowelActivity", "⚠️ Par confuso detectado! Threshold ajustado: " + 
+                    Log.d("PrintLetterVowelActivity", "⚠️ Par confuso detectado! Threshold ajustado: " + 
                           String.format("%.2f%%", effectiveThreshold * 100));
                 }
 

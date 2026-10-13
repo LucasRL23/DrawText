@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">ABC Magic</string>
-    <string name="title_activity_letter_vowel">LetterVowelActivity</string>
+    <string name="title_activity_letter_vowel">PrintLetterVowelActivity</string>
 </resources>

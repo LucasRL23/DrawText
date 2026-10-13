@@ -17,9 +17,9 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3543569662200404~7307834597"/>
-        <activity android:name=".LetterConsonantActivity" android:configChanges="orientation"
+        <activity android:name=".PrintLetterConsonantActivity" android:configChanges="orientation"
             android:exported="false" />
-        <activity android:name=".LetterConsonantMainActivity" android:configChanges="orientation"
+        <activity android:name=".PrintLetterConsonantMainActivity" android:configChanges="orientation"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
@@ -43,12 +43,12 @@
             android:theme="@style/AppTheme"
             android:exported="false"/>
         <activity
-            android:name=".LetterVowelMainActivity"
+            android:name=".PrintLetterVowelMainActivity"
             android:configChanges="orientation"
             android:theme="@style/AppTheme"
             android:exported="false"/>
         <activity
-            android:name=".LetterVowelActivity"
+            android:name=".PrintLetterVowelActivity"
             android:configChanges="orientation"
             android:theme="@style/AppTheme"
             android:exported="false"/>
