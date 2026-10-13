@@ -43,7 +43,7 @@ public class PrintLetterVowelMainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         ActionBar bar = getSupportActionBar();
         if (bar != null) {
-            bar.setTitle(getResources().getString(R.string.app_name));
+            bar.setTitle(R.string.print_vowels);
             bar.setDisplayHomeAsUpEnabled(true);
             bar.setHomeButtonEnabled(true);
         }

@@ -85,7 +85,7 @@
                             android:textStyle="bold"
                             android:layout_margin="10sp"
                             android:textColor="#343434"
-                            android:text="Vogais"/>
+                            android:id="@+id/category_vowels_title" android:text="@string/vowels"/>
 
                         <View
                             android:layout_width="0dp"
@@ -152,7 +152,7 @@
                             android:textStyle="bold"
                             android:layout_margin="10sp"
                             android:textColor="#343434"
-                            android:text="Consoantes"/>
+                            android:id="@+id/category_consonants_title" android:text="@string/consonants"/>
 
                         <View
                             android:layout_width="0dp"

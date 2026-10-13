@@ -44,7 +44,7 @@ public class PrintLetterConsonantMainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar bar = getSupportActionBar();
         if (bar != null) {
-            bar.setTitle(getResources().getString(R.string.app_name));
+            bar.setTitle(R.string.print_consonants);
             bar.setDisplayHomeAsUpEnabled(true);
             bar.setHomeButtonEnabled(true);
         }

@@ -59,6 +59,7 @@
             android:exported="false"/>
 
         <activity android:name=".PrintLettersMainActivity" android:exported="false" />
+        <activity android:name=".CursiveLettersMainActivity" android:exported="false" />
     </application>
 
 </manifest>

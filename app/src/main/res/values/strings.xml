@@ -4,4 +4,12 @@
     <string name="print_letters">Letras de forma</string>
     <string name="cursive_letters">Letras cursivas</string>
     <string name="cursive_coming_soon">Os exercícios de letras cursivas estarão disponíveis em breve.</string>
+    <string name="vowels">Vogais</string>
+    <string name="consonants">Consoantes</string>
+    <string name="cursive_vowels">Vogais cursivas</string>
+    <string name="cursive_consonants">Consoantes cursivas</string>
+    <string name="cursive_vowels_coming_soon">Vogais — Em breve</string>
+    <string name="cursive_consonants_coming_soon">Consoantes — Em breve</string>
+    <string name="print_vowels">Vogais de forma</string>
+    <string name="print_consonants">Consoantes de forma</string>
 </resources>

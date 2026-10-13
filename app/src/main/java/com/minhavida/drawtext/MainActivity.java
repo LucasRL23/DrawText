@@ -34,11 +34,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.card_print_letters).setOnClickListener(v ->
                 startActivity(new Intent(this, PrintLettersMainActivity.class)));
         findViewById(R.id.card_cursive_letters).setOnClickListener(v ->
-                new androidx.appcompat.app.AlertDialog.Builder(this)
-                        .setTitle(R.string.cursive_letters)
-                        .setMessage(R.string.cursive_coming_soon)
-                        .setPositiveButton(android.R.string.ok, null)
-                        .show());
+                startActivity(new Intent(this, CursiveLettersMainActivity.class)));
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
