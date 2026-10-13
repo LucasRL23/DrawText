@@ -153,7 +153,7 @@ public class CursiveLetterAView extends View {
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 stopDemonstration();
-                getParent().requestDisallowInterceptTouchEvent(true);
+                if (getParent() != null) getParent().requestDisallowInterceptTouchEvent(true);
                 drawingStroke = true;
                 points.add(Float.NaN); points.add(Float.NaN);
                 drawing.moveTo(x, y);
@@ -166,13 +166,13 @@ public class CursiveLetterAView extends View {
                 points.add(x); points.add(y);
                 if (event.getActionMasked() == MotionEvent.ACTION_UP) {
                     drawingStroke = false;
-                    getParent().requestDisallowInterceptTouchEvent(false);
+                    if (getParent() != null) getParent().requestDisallowInterceptTouchEvent(false);
                     performClick();
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
                 drawingStroke = false;
-                getParent().requestDisallowInterceptTouchEvent(false);
+                if (getParent() != null) getParent().requestDisallowInterceptTouchEvent(false);
                 break;
             default:
                 return false;

@@ -12,4 +12,13 @@
     <string name="cursive_consonants_coming_soon">Consoantes — Em breve</string>
     <string name="print_vowels">Vogais de forma</string>
     <string name="print_consonants">Consoantes de forma</string>
+    <string name="cursive_a_title">A maiúsculo cursivo</string>
+    <string name="cursive_choose_letter">Escolha uma letra para praticar.</string>
+    <string name="cursive_practice_action">Toque para praticar o traçado</string>
+    <string name="cursive_more_vowels_soon">As vogais E, I, O e U estarão disponíveis em breve.</string>
+    <string name="cursive_a_instruction">Siga o modelo pontilhado na ordem 1, 2 e 3. Toque em Ver traçado para acompanhar a demonstração.</string>
+    <string name="cursive_a_canvas_description">Área para desenhar o A maiúsculo cursivo sobre o modelo pontilhado</string>
+    <string name="cursive_free_practice">Prática livre de traçado</string>
+    <string name="cursive_show_tracing">Ver traçado</string>
+    <string name="cursive_clear">Limpar</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.minhavida.drawtext;
 
 import android.os.Bundle;
+import android.content.Intent;
 import android.view.MenuItem;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,11 +19,11 @@ public class CursiveLettersMainActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         findViewById(R.id.card_letter_vowel).setOnClickListener(v ->
-                showComingSoon(R.string.cursive_vowels));
+                startActivity(new Intent(this, CursiveVowelsMainActivity.class)));
         findViewById(R.id.card_letter_consonant).setOnClickListener(v ->
                 showComingSoon(R.string.cursive_consonants));
         ((android.widget.TextView) findViewById(R.id.category_vowels_title))
-                .setText(R.string.cursive_vowels_coming_soon);
+                .setText(R.string.vowels);
         ((android.widget.TextView) findViewById(R.id.category_consonants_title))
                 .setText(R.string.cursive_consonants_coming_soon);
     }

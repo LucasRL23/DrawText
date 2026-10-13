@@ -60,6 +60,8 @@
 
         <activity android:name=".PrintLettersMainActivity" android:exported="false" />
         <activity android:name=".CursiveLettersMainActivity" android:exported="false" />
+        <activity android:name=".CursiveVowelsMainActivity" android:exported="false" />
+        <activity android:name=".CursiveLetterAActivity" android:exported="false" />
     </application>
 
 </manifest>
