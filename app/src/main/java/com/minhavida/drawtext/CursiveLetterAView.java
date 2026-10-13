@@ -2,6 +2,9 @@ package com.minhavida.drawtext;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.XmlResourceParser;
+import androidx.core.graphics.PathParser;
+import org.xmlpull.v1.XmlPullParser;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -40,23 +43,26 @@ public class CursiveLetterAView extends View {
         labelPaint.setColor(Color.rgb(89, 53, 158));
         labelPaint.setTextSize(16f);
         labelPaint.setTextAlign(Paint.Align.CENTER);
-        guide[0] = new Path();
-        guide[0].moveTo(74, 282);
-        guide[0].cubicTo(102, 246, 128, 158, 153, 111);
-        guide[0].cubicTo(171, 77, 196, 57, 198, 79);
-        guide[0].cubicTo(200, 97, 177, 119, 160, 116);
-        guide[0].cubicTo(144, 113, 148, 95, 162, 88);
-        guide[1] = new Path();
-        guide[1].moveTo(194, 77);
-        guide[1].cubicTo(180, 119, 168, 184, 170, 239);
-        guide[1].cubicTo(171, 281, 201, 291, 246, 262);
-        guide[2] = new Path();
-        guide[2].moveTo(103, 213);
-        guide[2].cubicTo(130, 195, 165, 188, 205, 195);
+        loadGuide();
         setBackgroundColor(Color.WHITE);
         setFocusable(true);
     }
 
+    private void loadGuide() {
+        try (XmlResourceParser xml = getResources().getXml(R.drawable.dotted_letter_cursive_a)) {
+            int index = 0;
+            while (xml.next() != XmlPullParser.END_DOCUMENT) {
+                if (xml.getEventType() == XmlPullParser.START_TAG && "path".equals(xml.getName())) {
+                    if (index >= guide.length) throw new IllegalStateException("Too many guide strokes");
+                    String data = xml.getAttributeValue("http://schemas.android.com/apk/res/android", "pathData");
+                    guide[index++] = PathParser.createPathFromPathData(data);
+                }
+            }
+            if (index != guide.length) throw new IllegalStateException("Incomplete A guide");
+        } catch (java.io.IOException | org.xmlpull.v1.XmlPullParserException error) {
+            throw new IllegalStateException("Unable to load cursive A drawable", error);
+        }
+    }
     private static void configureStroke(Paint paint, int color, float width) {
         paint.setColor(color);
         paint.setStyle(Paint.Style.STROKE);

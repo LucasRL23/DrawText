@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Guide geometry lives here; CursiveLetterAView adds dots and stroke animation. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp" android:height="360dp"
+    android:viewportWidth="320" android:viewportHeight="360">
+    <path android:name="stroke_1" android:pathData="M74,282 C102,246 128,158 153,111 C171,77 196,57 198,79 C200,97 177,119 160,116 C144,113 148,95 162,88"
+        android:strokeColor="#B1A4CB" android:strokeWidth="9"
+        android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:name="stroke_2" android:pathData="M194,77 C180,119 168,184 170,239 C171,281 201,291 246,262"
+        android:strokeColor="#B1A4CB" android:strokeWidth="9"
+        android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:name="stroke_3" android:pathData="M103,213 C130,195 165,188 205,195"
+        android:strokeColor="#B1A4CB" android:strokeWidth="9"
+        android:strokeLineCap="round" android:strokeLineJoin="round" />
+</vector>
