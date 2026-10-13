@@ -266,7 +266,7 @@ public class PrintLetterConsonantActivity extends AppCompatActivity {
         map.put(24, 'y');
         map.put(25, 'z');
 
-        int drawableNumberId = getResources().getIdentifier("dotted_letter_"+map.get(number),
+        int drawableNumberId = getResources().getIdentifier("dotted_letter_print_"+map.get(number),
                 "drawable",
                 this.getPackageName());
 
