@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:fitsSystemWindows="true" android:orientation="vertical" android:background="#FFFFFF">
+    <androidx.appcompat.widget.Toolbar android:id="@+id/toolbar"
+        android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary" android:theme="@style/AppTheme.AppBarOverlay"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+    <TextView android:id="@+id/cursive_instruction"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:padding="12dp" android:text="@string/cursive_letter_instruction" android:textSize="16sp" />
+    <FrameLayout android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" android:layout_marginHorizontal="12dp">
+        <com.minhavida.drawtext.cursive.uppercase.vowels.CursiveLetterView android:id="@+id/cursive_canvas"
+            android:layout_width="match_parent" android:layout_height="match_parent" />
+        <ImageView android:id="@+id/cursive_feedback"
+            android:layout_width="96dp" android:layout_height="96dp"
+            android:layout_gravity="center" android:importantForAccessibility="no" android:visibility="gone" />
+    </FrameLayout>
+    <TextView android:id="@+id/cursive_status" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:paddingHorizontal="12dp"
+        android:accessibilityLiveRegion="polite" android:textSize="14sp" />
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:padding="12dp">
+        <Button android:id="@+id/show_cursive_tracing" android:layout_width="0dp"
+            android:layout_weight="1" android:layout_height="wrap_content" android:minHeight="48dp"
+            android:minWidth="0dp" android:text="@string/cursive_show_tracing" />
+        <Button android:id="@+id/clear_cursive_drawing" android:layout_width="0dp"
+            android:layout_weight="1" android:layout_height="wrap_content" android:minHeight="48dp"
+            android:minWidth="0dp" android:layout_marginStart="8dp" android:text="@string/cursive_clear" />
+        <Button android:id="@+id/check_cursive_drawing" android:layout_width="0dp"
+            android:layout_weight="1" android:layout_height="wrap_content" android:minHeight="48dp"
+            android:minWidth="0dp" android:layout_marginStart="8dp" android:text="@string/cursive_check" />
+    </LinearLayout>
+</LinearLayout>

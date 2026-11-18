@@ -1,4 +1,6 @@
-package com.minhavida.drawtext;
+package com.minhavida.drawtext.print.uppercase.vowels;
+
+import com.minhavida.drawtext.R;
 
 import android.content.Intent;
 import android.os.Bundle;

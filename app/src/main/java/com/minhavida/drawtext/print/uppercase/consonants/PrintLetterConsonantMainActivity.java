@@ -1,4 +1,6 @@
-package com.minhavida.drawtext;
+package com.minhavida.drawtext.print.uppercase.consonants;
+
+import com.minhavida.drawtext.R;
 
 import android.content.Intent;
 import androidx.annotation.Nullable;

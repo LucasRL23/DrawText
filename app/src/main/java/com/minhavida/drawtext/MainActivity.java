@@ -10,6 +10,9 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.CheckBox;
 
+import com.minhavida.drawtext.cursive.CursiveLettersMainActivity;
+import com.minhavida.drawtext.print.PrintLettersMainActivity;
+
 
 public class MainActivity extends AppCompatActivity {
 

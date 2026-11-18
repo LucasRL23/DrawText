@@ -1,4 +1,9 @@
-package com.minhavida.drawtext;
+package com.minhavida.drawtext.print.uppercase.vowels;
+
+import com.minhavida.drawtext.CanvasView;
+import com.minhavida.drawtext.Classification;
+import com.minhavida.drawtext.ImageClassifier;
+import com.minhavida.drawtext.R;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;

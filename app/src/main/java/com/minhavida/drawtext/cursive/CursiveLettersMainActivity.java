@@ -1,4 +1,7 @@
-package com.minhavida.drawtext;
+package com.minhavida.drawtext.cursive;
+
+import com.minhavida.drawtext.R;
+import com.minhavida.drawtext.cursive.uppercase.vowels.CursiveVowelsMainActivity;
 
 import android.os.Bundle;
 import android.content.Intent;

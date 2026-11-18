@@ -15,10 +15,24 @@
     <string name="cursive_a_title">A maiúsculo cursivo</string>
     <string name="cursive_choose_letter">Escolha uma letra para praticar.</string>
     <string name="cursive_practice_action">Toque para praticar o traçado</string>
-    <string name="cursive_more_vowels_soon">As vogais E, I, O e U estarão disponíveis em breve.</string>
     <string name="cursive_a_instruction">Siga o modelo pontilhado na ordem 1, 2 e 3. Toque em Ver traçado para acompanhar a demonstração.</string>
     <string name="cursive_a_canvas_description">Área para desenhar o A maiúsculo cursivo sobre o modelo pontilhado</string>
-    <string name="cursive_free_practice">Prática livre de traçado</string>
     <string name="cursive_show_tracing">Ver traçado</string>
     <string name="cursive_clear">Limpar</string>
+    <string name="cursive_check">OK</string>
+    <string name="cursive_correct">Muito bem!</string>
+    <string name="cursive_retry">Tente novamente.</string>
+    <string name="cursive_draw_first">Desenhe a letra antes de tocar em OK.</string>
+    <string name="cursive_model_unavailable">Não foi possível carregar a correção das vogais cursivas.</string>
+    <string name="cursive_guide_progress">Acertos para ocultar o guia: %1$d de %2$d.</string>
+    <string name="cursive_guide_hidden">Agora pratique sem o guia.</string>
+    <string name="cursive_a_practice_instruction">Siga o guia pontilhado para desenhar o A. Toque em Ver traçado para acompanhar o movimento.</string>
+    <string name="cursive_a_correction_in_review">Correção automática do A em revisão.</string>
+    <string name="cursive_e_title">E maiúsculo cursivo</string>
+    <string name="cursive_i_title">I maiúsculo cursivo</string>
+    <string name="cursive_o_title">O maiúsculo cursivo</string>
+    <string name="cursive_u_title">U maiúsculo cursivo</string>
+    <string name="cursive_letter_title">%1$s maiúsculo cursivo</string>
+    <string name="cursive_letter_instruction">Desenhe a letra e toque em OK. Enquanto o guia estiver visível, toque em Ver traçado para acompanhar a demonstração.</string>
+    <string name="cursive_canvas_description">Área para desenhar a letra %1$s cursiva</string>
 </resources>

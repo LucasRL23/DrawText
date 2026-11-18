@@ -1,4 +1,8 @@
-package com.minhavida.drawtext;
+package com.minhavida.drawtext.print;
+
+import com.minhavida.drawtext.R;
+import com.minhavida.drawtext.print.uppercase.consonants.PrintLetterConsonantMainActivity;
+import com.minhavida.drawtext.print.uppercase.vowels.PrintLetterVowelMainActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
