@@ -7,15 +7,12 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import androidx.annotation.RequiresApi;
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.ActionBar;
@@ -23,11 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -49,64 +43,32 @@ public class NumberActivity extends AppCompatActivity {
     private CanvasView canvasView;
     private int number;
     private ImageView imageViewNumber;
-    private ImageView imageViewFeedback;
-    private MediaPlayer mediaPlayer;
     private ImageClassifier tfClassifier;
-    private float screenTransparency = 0f;
     private static final int REQUEST_CODE_PERMISSION = 1;
-    private double DIFFICULTY_LEVEL = 0.8;
+    private ExerciseSession session;
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        // show menu when menu button is pressed
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu, menu);
-        menu.getItem(0).setChecked(true);
-        menu.getItem(1).setChecked(false);
-        menu.getItem(2).setChecked(false);
-        menu.getItem(3).setChecked(false);
-        menu.getItem(4).setChecked(false);
-        return true;
+        return session.createMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        int id = item.getItemId();
-        if(id == android.R.id.home)
-        {
+        if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
         }
-        if (item.getItemId() == R.id.menu_nivel1) {
-            DIFFICULTY_LEVEL = 0.8;
-            item.setChecked(true);
-        }
-        else if (item.getItemId() == R.id.menu_nivel2) {
-            DIFFICULTY_LEVEL = 0.9;
-            item.setChecked(true);
-        }
-        else if (item.getItemId() == R.id.menu_nivel3) {
-            DIFFICULTY_LEVEL = 0.97;
-            item.setChecked(true);
-        }
-        else if (item.getItemId() == R.id.menu_nivel4) {
-            DIFFICULTY_LEVEL = 0.99;
-            item.setChecked(true);
-        }
-        else if (item.getItemId() == R.id.menu_nivel5) {
-            DIFFICULTY_LEVEL = 0.999;
-            item.setChecked(true);
-        }
-        return true;
+        return session.selectLevel(item) || super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.number_activity);
+        session = new ExerciseSession(this, savedInstanceState);
 
         canvasView = findViewById(R.id.canvas);
         canvasView.setActivity(this);
@@ -123,7 +85,6 @@ public class NumberActivity extends AppCompatActivity {
         canvasView.setNumber(number);
 
         imageViewNumber = findViewById(R.id.iv_number);
-        imageViewFeedback = findViewById(R.id.iv_feedback);
         ImageView ivPlaySound = findViewById(R.id.iv_playsound);
 
 
@@ -131,9 +92,7 @@ public class NumberActivity extends AppCompatActivity {
         {
             int drawableNumberId = getResources().getIdentifier("som_"+number,
                     "raw", NumberActivity.this.getPackageName());
-            MediaPlayer mediaPlayer=MediaPlayer.create(NumberActivity.this, drawableNumberId);
-            mediaPlayer.setVolume(0.15f, 0.15f);
-            mediaPlayer.start();
+            session.playSound(drawableNumberId, 0.15f);
         }
 
         ivPlaySound.setOnClickListener(new View.OnClickListener() {
@@ -142,9 +101,7 @@ public class NumberActivity extends AppCompatActivity {
             {
                 int drawableNumberId = getResources().getIdentifier("som_"+number,
                         "raw", NumberActivity.this.getPackageName());
-                MediaPlayer mediaPlayer=MediaPlayer.create(NumberActivity.this, drawableNumberId);
-                mediaPlayer.setVolume(0.15f, 0.15f);
-                mediaPlayer.start();
+                session.playSound(drawableNumberId, 0.15f);
                 Log.d("debug", number + " sound clicked");
             }
         });
@@ -161,87 +118,28 @@ public class NumberActivity extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
+                if (session.isFeedbackShowing()) return;
                 Log.d("NumberActivity", "========================================");
                 Log.d("NumberActivity", "🎯 USUÁRIO CLICOU EM VERIFICAR");
                 Log.d("NumberActivity", "Número esperado: " + number);
-                Log.d("NumberActivity", "Nível de dificuldade: " + String.format("%.2f%%", DIFFICULTY_LEVEL * 100));
+                Log.d("NumberActivity", "Nível de dificuldade: " + String.format("%.2f%%", session.getRequiredConfidence() * 100));
                 Log.d("NumberActivity", "========================================");
                 
                 float[] arrayImage = canvasView.getPixelsArray();
                 Classification cls = tfClassifier.recognize(arrayImage, 1);
 
-//                saveStatisticsToSpreadSheet(number, cls.getLabel(), cls.getConf(), DIFFICULTY_LEVEL);
+//                saveStatisticsToSpreadSheet(number, cls.getLabel(), cls.getConf(), session.getRequiredConfidence());
 
                 Log.d("NumberActivity", "========================================");
                 Log.d("NumberActivity", "📝 COMPARAÇÃO:");
                 Log.d("NumberActivity", "  Esperado: " + number);
                 Log.d("NumberActivity", "  Predito: " + cls.getLabel());
                 Log.d("NumberActivity", "  Confiança: " + String.format("%.2f%%", cls.getConf() * 100));
-                Log.d("NumberActivity", "  Threshold: " + String.format("%.2f%%", DIFFICULTY_LEVEL * 100));
+                Log.d("NumberActivity", "  Threshold: " + String.format("%.2f%%", session.getRequiredConfidence() * 100));
                 
-                if (cls.getLabel().equals(number+"") && cls.getConf() > DIFFICULTY_LEVEL)
-                {
-                    Log.i("NumberActivity", "✅ RESPOSTA CORRETA!");
-                    Log.d("NumberActivity", "========================================");
-
-                    mediaPlayer = MediaPlayer.create(view.getContext(), R.raw.correct_answer);
-                    mediaPlayer.setVolume(0.025f, 0.025f);
-                    mediaPlayer.start();
-                    imageViewFeedback.setImageDrawable(VectorDrawableCompat.create(getResources(),
-                            R.drawable.like, null));
-
-                    imageViewFeedback.setVisibility(View.VISIBLE);
-                    Animation zoomIn = AnimationUtils.loadAnimation(view.getContext(), R.anim.zoom_out);
-                    imageViewFeedback.setAnimation(zoomIn);
-                    imageViewFeedback.startAnimation(zoomIn);
-
-                    if (screenTransparency < 1f)
-                        screenTransparency += .2;
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run()
-                        {
-                            imageViewFeedback.setAnimation(null);
-                            imageViewFeedback.setVisibility(View.GONE);
-                            canvasView.clearCanvas();
-                            loadNumber();
-                        }
-                    }, 2000);
-                }
-                else
-                {
-                    Log.w("NumberActivity", "❌ RESPOSTA INCORRETA!");
-                    if (!cls.getLabel().equals(number+"")) {
-                        Log.w("NumberActivity", "  Motivo: Número diferente");
-                    }
-                    if (cls.getConf() <= DIFFICULTY_LEVEL) {
-                        Log.w("NumberActivity", "  Motivo: Confiança insuficiente");
-                    }
-                    Log.d("NumberActivity", "========================================");
-                    
-                    imageViewFeedback.setImageDrawable(VectorDrawableCompat.create(getResources(),
-                            R.drawable.dislike, null));
-
-                    imageViewFeedback.setVisibility(View.VISIBLE);
-                    Animation zoomOut = AnimationUtils.loadAnimation(view.getContext(), R.anim.zoom_out);
-                    imageViewFeedback.setAnimation(zoomOut);
-                    imageViewFeedback.startAnimation(zoomOut);
-                    mediaPlayer = MediaPlayer.create(view.getContext(), R.raw.wrong_answer);
-                    mediaPlayer.setVolume(0.05f, 0.05f);
-                    mediaPlayer.start();
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run()
-                        {
-                            imageViewFeedback.setAnimation(null);
-                            canvasView.clearCanvas();
-                            imageViewFeedback.setVisibility(View.GONE);
-                        }
-                    }, 2000);
-
-                }
+                boolean correct = cls.getLabel().equals(String.valueOf(number))
+                        && cls.getConf() > session.getRequiredConfidence();
+                session.showFeedback(correct, NumberActivity.this::loadNumber);
             }
         });
 
@@ -319,7 +217,7 @@ public class NumberActivity extends AppCompatActivity {
         imageViewNumber.setImageDrawable(AnimatedVectorDrawableCompat.create(
                 this, drawableNumberId));
 
-        imageViewNumber.setAlpha(1f - screenTransparency);
+        imageViewNumber.setAlpha(session.getGuideOpacity());
 
         Drawable drawable = imageViewNumber.getDrawable();
         if (drawable instanceof AnimatedVectorDrawableCompat)
@@ -351,11 +249,16 @@ public class NumberActivity extends AppCompatActivity {
 
     }
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        session.saveState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     protected void onDestroy() {
+        if (session != null) session.close();
+        if (tfClassifier != null) tfClassifier.close();
         super.onDestroy();
-        if (tfClassifier instanceof ImageClassifier) {
-            ((ImageClassifier) tfClassifier).close(); // ✅ Liberar recursos
-        }
     }
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void clearCanvas (View v)

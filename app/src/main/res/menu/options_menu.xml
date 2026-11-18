@@ -32,7 +32,7 @@
             android:id="@+id/menu_nivel2"
             android:checked="false"
             android:icon="@drawable/check"
-            android:title="Nível 2 ☆"/>
+            android:title="Nível 2 ☆☆"/>
 
         <item
             android:id="@+id/menu_nivel1"

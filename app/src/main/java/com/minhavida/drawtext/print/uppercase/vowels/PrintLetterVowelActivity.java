@@ -1,6 +1,7 @@
 package com.minhavida.drawtext.print.uppercase.vowels;
 
 import com.minhavida.drawtext.CanvasView;
+import com.minhavida.drawtext.ExerciseSession;
 import com.minhavida.drawtext.Classification;
 import com.minhavida.drawtext.ImageClassifier;
 import com.minhavida.drawtext.R;
@@ -10,23 +11,17 @@ import android.annotation.TargetApi;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -48,17 +43,15 @@ public class PrintLetterVowelActivity extends AppCompatActivity {
     private CanvasView canvasView;
     private int number;
     private ImageView imageViewLetterVowel;
-    private ImageView imageViewFeedback;
-    private MediaPlayer mediaPlayer;
     private ImageClassifier tfClassifier;
-    private float difficulty = 0f;
-    private double DIFFICULTY_LEVEL = 0.8;
+    private ExerciseSession session;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_print_letter_vowel);
+        session = new ExerciseSession(this, savedInstanceState);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar bar = getSupportActionBar();
@@ -77,10 +70,7 @@ public class PrintLetterVowelActivity extends AppCompatActivity {
         {
             int drawableNumberId = getResources().getIdentifier("som_"+number,
                     "raw", PrintLetterVowelActivity.this.getPackageName());
-            MediaPlayer mediaPlayer=MediaPlayer.create(PrintLetterVowelActivity.this,
-                    drawableNumberId);
-            mediaPlayer.setVolume(0.15f, 0.15f);
-            mediaPlayer.start();
+            session.playSound(drawableNumberId, 0.15f);
         }
 
         canvasView = findViewById(R.id.canvas);
@@ -91,17 +81,13 @@ public class PrintLetterVowelActivity extends AppCompatActivity {
         canvasView.setNumber(number);
 
         imageViewLetterVowel = findViewById(R.id.iv_letter_vowel);
-        imageViewFeedback = findViewById(R.id.iv_feedback);
         ImageView ivPlaySound = findViewById(R.id.iv_playsound);
         ivPlaySound.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int drawableNumberId = getResources().getIdentifier("som_"+number,
                         "raw", PrintLetterVowelActivity.this.getPackageName());
-                MediaPlayer mediaPlayer=MediaPlayer.create(PrintLetterVowelActivity.this,
-                        drawableNumberId);
-                mediaPlayer.setVolume(0.15f, 0.15f);
-                mediaPlayer.start();
+                session.playSound(drawableNumberId, 0.15f);
             }
         });
 
@@ -118,79 +104,32 @@ public class PrintLetterVowelActivity extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
+                if (session.isFeedbackShowing()) return;
                 float[] arrayImage = canvasView.getPixelsArray();
                 Classification cls = tfClassifier.recognize(arrayImage, 1);
 
-                //saveStatisticsToSpreadSheet(arr[number], cls.getLabel(), cls.getConf(), DIFFICULTY_LEVEL);
+                //saveStatisticsToSpreadSheet(arr[number], cls.getLabel(), cls.getConf(), session.getRequiredConfidence());
 
                 Log.d("debug:", "confidence:" + cls.getConf());
                 Log.d("debug:", "class:" + arr[number]);
                 Log.d("debug:", "pred class:" + cls.getLabel());
 
                 boolean isConfusingPair = isConfusingLetterPair(arr[number], cls.getLabel());
-                double effectiveThreshold = DIFFICULTY_LEVEL;
+                double effectiveThreshold = session.getRequiredConfidence();
                 
                 if (arr[number].equals("O")) {
-                    effectiveThreshold = Math.max(0.5, DIFFICULTY_LEVEL - 0.15);
+                    effectiveThreshold = Math.max(0.5, session.getRequiredConfidence() - 0.15);
                     Log.d("PrintLetterVowelActivity", "ℹ️ Letra O - threshold reduzido: " + 
                           String.format("%.2f%%", effectiveThreshold * 100));
                 } else if (isConfusingPair) {
-                    effectiveThreshold = Math.min(0.999, DIFFICULTY_LEVEL + 0.03);
+                    effectiveThreshold = Math.min(0.999, session.getRequiredConfidence() + 0.03);
                     Log.d("PrintLetterVowelActivity", "⚠️ Par confuso detectado! Threshold ajustado: " + 
                           String.format("%.2f%%", effectiveThreshold * 100));
                 }
 
-                if (cls.getLabel().equals(arr[number]) && cls.getConf() > effectiveThreshold)
-                {
-                    mediaPlayer = MediaPlayer.create(view.getContext(), R.raw.correct_answer);
-                    mediaPlayer.setVolume(0.025f, 0.025f);
-                    mediaPlayer.start();
-                    imageViewFeedback.setImageDrawable(VectorDrawableCompat.create(getResources(),
-                            R.drawable.like, null));
-
-                    imageViewFeedback.setVisibility(View.VISIBLE);
-                    Animation zoomIn = AnimationUtils.loadAnimation(view.getContext(), R.anim.zoom_out);
-                    imageViewFeedback.setAnimation(zoomIn);
-                    imageViewFeedback.startAnimation(zoomIn);
-
-                    if (difficulty < 1f)
-                        difficulty += .2;
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run()
-                        {
-                            imageViewFeedback.setAnimation(null);
-                            imageViewFeedback.setVisibility(View.GONE);
-                            canvasView.clearCanvas();
-                            loadLetter();
-                        }
-                    }, 2000);
-                }
-                else
-                {
-                    imageViewFeedback.setImageDrawable(VectorDrawableCompat.create(getResources(),
-                            R.drawable.dislike, null));
-
-                    imageViewFeedback.setVisibility(View.VISIBLE);
-                    Animation zoomOut = AnimationUtils.loadAnimation(view.getContext(), R.anim.zoom_out);
-                    imageViewFeedback.setAnimation(zoomOut);
-                    imageViewFeedback.startAnimation(zoomOut);
-                    mediaPlayer = MediaPlayer.create(view.getContext(), R.raw.wrong_answer);
-                    mediaPlayer.setVolume(0.05f, 0.05f);
-                    mediaPlayer.start();
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run()
-                        {
-                            imageViewFeedback.setAnimation(null);
-                            canvasView.clearCanvas();
-                            imageViewFeedback.setVisibility(View.GONE);
-                        }
-                    }, 2000);
-
-                }
+                boolean correct = cls.getLabel().equals(arr[number])
+                        && cls.getConf() > effectiveThreshold;
+                session.showFeedback(correct, PrintLetterVowelActivity.this::loadLetter);
             }
         });
 
@@ -268,7 +207,7 @@ public class PrintLetterVowelActivity extends AppCompatActivity {
         imageViewLetterVowel.setImageDrawable(AnimatedVectorDrawableCompat.create(
                 this, drawableNumberId));
 
-        imageViewLetterVowel.setAlpha(1f-difficulty);
+        imageViewLetterVowel.setAlpha(session.getGuideOpacity());
 
         Drawable drawable = imageViewLetterVowel.getDrawable();
         if (drawable instanceof AnimatedVectorDrawableCompat)
@@ -286,47 +225,17 @@ public class PrintLetterVowelActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        // show menu when menu button is pressed
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu, menu);
-        menu.getItem(0).setChecked(true);
-        menu.getItem(1).setChecked(false);
-        menu.getItem(2).setChecked(false);
-        menu.getItem(3).setChecked(false);
-        menu.getItem(4).setChecked(false);
-        return true;
+        return session.createMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        int id = item.getItemId();
-        if(id == android.R.id.home)
-        {
+        if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
         }
-        if (item.getItemId() == R.id.menu_nivel1) {
-            DIFFICULTY_LEVEL = 0.8;
-            item.setChecked(true);
-        }
-        else if (item.getItemId() == R.id.menu_nivel2) {
-            DIFFICULTY_LEVEL = 0.9;
-            item.setChecked(true);
-        }
-        else if (item.getItemId() == R.id.menu_nivel3) {
-            DIFFICULTY_LEVEL = 0.97;
-            item.setChecked(true);
-        }
-        else if (item.getItemId() == R.id.menu_nivel4) {
-            DIFFICULTY_LEVEL = 0.99;
-            item.setChecked(true);
-        }
-        else if (item.getItemId() == R.id.menu_nivel5) {
-            DIFFICULTY_LEVEL = 0.999;
-            item.setChecked(true);
-        }
-        return true;
+        return session.selectLevel(item) || super.onOptionsItemSelected(item);
     }
 
     /**
@@ -373,11 +282,16 @@ public class PrintLetterVowelActivity extends AppCompatActivity {
         }
     }
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        session.saveState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     protected void onDestroy() {
+        if (session != null) session.close();
+        if (tfClassifier != null) tfClassifier.close();
         super.onDestroy();
-        if (tfClassifier instanceof ImageClassifier) {
-            ((ImageClassifier) tfClassifier).close(); // ✅ Liberar recursos
-        }
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)

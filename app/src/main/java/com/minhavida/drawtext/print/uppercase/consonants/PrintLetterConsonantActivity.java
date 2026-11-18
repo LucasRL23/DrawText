@@ -1,6 +1,7 @@
 package com.minhavida.drawtext.print.uppercase.consonants;
 
 import com.minhavida.drawtext.CanvasView;
+import com.minhavida.drawtext.ExerciseSession;
 import com.minhavida.drawtext.Classification;
 import com.minhavida.drawtext.ImageClassifier;
 import com.minhavida.drawtext.R;
@@ -10,23 +11,17 @@ import android.annotation.TargetApi;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
 import android.os.Build;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -48,16 +43,15 @@ public class PrintLetterConsonantActivity extends AppCompatActivity {
     private CanvasView canvasView;
     private int number;
     private boolean autoSoundEnabled = false;
-    private ImageView imageViewLetterConsonant, imageViewFeedback, ivPlaySound;
-    private MediaPlayer mediaPlayer;
+    private ImageView imageViewLetterConsonant, ivPlaySound;
     private ImageClassifier tfClassifier;
-    private float difficulty = 0f;
-    private double DIFFICULTY_LEVEL = 0.8;
+    private ExerciseSession session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_print_letter_consonant);
+        session = new ExerciseSession(this, savedInstanceState);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -79,7 +73,6 @@ public class PrintLetterConsonantActivity extends AppCompatActivity {
         canvasView.setNumber(number);
 
         imageViewLetterConsonant = findViewById(R.id.iv_letter_consonant);
-        imageViewFeedback = findViewById(R.id.iv_feedback);
         ivPlaySound = findViewById(R.id.iv_playsound);
 
         loadLetter();
@@ -94,96 +87,37 @@ public class PrintLetterConsonantActivity extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
+                if (session.isFeedbackShowing()) return;
                 Log.d("PrintLetterConsonantActivity", "========================================");
                 Log.d("PrintLetterConsonantActivity", "🎯 USUÁRIO CLICOU EM VERIFICAR");
                 Log.d("PrintLetterConsonantActivity", "Letra esperada: " + arr[number]);
-                Log.d("PrintLetterConsonantActivity", "Nível de dificuldade: " + String.format("%.2f%%", DIFFICULTY_LEVEL * 100));
+                Log.d("PrintLetterConsonantActivity", "Nível de dificuldade: " + String.format("%.2f%%", session.getRequiredConfidence() * 100));
                 Log.d("PrintLetterConsonantActivity", "========================================");
                 
                 float[] arrayImage = canvasView.getPixelsArray();
                 Classification cls = tfClassifier.recognize(arrayImage, 1);
 
-                //saveStatisticsToSpreadSheet(arr[number], cls.getLabel(), cls.getConf(), DIFFICULTY_LEVEL);
+                //saveStatisticsToSpreadSheet(arr[number], cls.getLabel(), cls.getConf(), session.getRequiredConfidence());
 
                 Log.d("PrintLetterConsonantActivity", "========================================");
                 Log.d("PrintLetterConsonantActivity", "📝 COMPARAÇÃO:");
                 Log.d("PrintLetterConsonantActivity", "  Esperado: " + arr[number]);
                 Log.d("PrintLetterConsonantActivity", "  Predito: " + cls.getLabel());
                 Log.d("PrintLetterConsonantActivity", "  Confiança: " + String.format("%.2f%%", cls.getConf() * 100));
-                Log.d("PrintLetterConsonantActivity", "  Threshold: " + String.format("%.2f%%", DIFFICULTY_LEVEL * 100));
+                Log.d("PrintLetterConsonantActivity", "  Threshold: " + String.format("%.2f%%", session.getRequiredConfidence() * 100));
 
                 boolean isConfusingPair = isConfusingLetterPair(arr[number], cls.getLabel());
-                double effectiveThreshold = DIFFICULTY_LEVEL;
+                double effectiveThreshold = session.getRequiredConfidence();
                 
                 if (isConfusingPair) {
-                    effectiveThreshold = Math.min(0.999, DIFFICULTY_LEVEL + 0.03);
+                    effectiveThreshold = Math.min(0.999, session.getRequiredConfidence() + 0.03);
                     Log.d("PrintLetterConsonantActivity", "  ⚠️  Par confuso detectado! Threshold ajustado: " + 
                           String.format("%.2f%%", effectiveThreshold * 100));
                 }
 
-                if (cls.getLabel().equals(arr[number]) && cls.getConf() > effectiveThreshold)
-                {
-                    Log.i("PrintLetterConsonantActivity", "✅ RESPOSTA CORRETA!");
-                    Log.d("PrintLetterConsonantActivity", "========================================");
-                    
-                    mediaPlayer = MediaPlayer.create(view.getContext(), R.raw.correct_answer);
-                    mediaPlayer.setVolume(0.025f, 0.025f);
-                    mediaPlayer.start();
-                    imageViewFeedback.setImageDrawable(VectorDrawableCompat.create(getResources(),
-                            R.drawable.like, null));
-
-                    imageViewFeedback.setVisibility(View.VISIBLE);
-                    Animation zoomIn = AnimationUtils.loadAnimation(view.getContext(), R.anim.zoom_out);
-                    imageViewFeedback.setAnimation(zoomIn);
-                    imageViewFeedback.startAnimation(zoomIn);
-
-                    if (difficulty < 1f)
-                        difficulty += .2;
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run()
-                        {
-                            imageViewFeedback.setAnimation(null);
-                            imageViewFeedback.setVisibility(View.GONE);
-                            canvasView.clearCanvas();
-                            loadLetter();
-                        }
-                    }, 2000);
-                }
-                else
-                {
-                    Log.w("PrintLetterConsonantActivity", "❌ RESPOSTA INCORRETA!");
-                    if (!cls.getLabel().equals(arr[number])) {
-                        Log.w("PrintLetterConsonantActivity", "  Motivo: Letra diferente");
-                    }
-                    if (cls.getConf() <= DIFFICULTY_LEVEL) {
-                        Log.w("PrintLetterConsonantActivity", "  Motivo: Confiança insuficiente");
-                    }
-                    Log.d("PrintLetterConsonantActivity", "========================================");
-                    
-                    imageViewFeedback.setImageDrawable(VectorDrawableCompat.create(getResources(),
-                            R.drawable.dislike, null));
-
-                    imageViewFeedback.setVisibility(View.VISIBLE);
-                    Animation zoomOut = AnimationUtils.loadAnimation(view.getContext(), R.anim.zoom_out);
-                    imageViewFeedback.setAnimation(zoomOut);
-                    imageViewFeedback.startAnimation(zoomOut);
-                    mediaPlayer = MediaPlayer.create(view.getContext(), R.raw.wrong_answer);
-                    mediaPlayer.setVolume(0.05f, 0.05f);
-                    mediaPlayer.start();
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run()
-                        {
-                            imageViewFeedback.setAnimation(null);
-                            canvasView.clearCanvas();
-                            imageViewFeedback.setVisibility(View.GONE);
-                        }
-                    }, 2000);
-
-                }
+                boolean correct = cls.getLabel().equals(arr[number])
+                        && cls.getConf() > effectiveThreshold;
+                session.showFeedback(correct, PrintLetterConsonantActivity.this::loadLetter);
             }
         });
 
@@ -278,7 +212,7 @@ public class PrintLetterConsonantActivity extends AppCompatActivity {
         imageViewLetterConsonant.setImageDrawable(AnimatedVectorDrawableCompat.create(
                 this, drawableNumberId));
 
-        imageViewLetterConsonant.setAlpha(1f-difficulty);
+        imageViewLetterConsonant.setAlpha(session.getGuideOpacity());
 
         Drawable drawable = imageViewLetterConsonant.getDrawable();
         if (drawable instanceof AnimatedVectorDrawableCompat)
@@ -296,48 +230,17 @@ public class PrintLetterConsonantActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        // show menu when menu button is pressed
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu, menu);
-        menu.getItem(0).setChecked(true);
-        menu.getItem(1).setChecked(false);
-        menu.getItem(2).setChecked(false);
-        menu.getItem(3).setChecked(false);
-        menu.getItem(4).setChecked(false);
-        return true;
+        return session.createMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        int id = item.getItemId();
-        if(id == android.R.id.home)
-        {
+        if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
         }
-        if (item.getItemId() == R.id.menu_nivel1) {
-            DIFFICULTY_LEVEL = 0.8;
-            item.setChecked(true);
-        }
-        else if (item.getItemId() == R.id.menu_nivel2) {
-            DIFFICULTY_LEVEL = 0.9;
-            item.setChecked(true);
-        }
-        else if (item.getItemId() == R.id.menu_nivel3) {
-            DIFFICULTY_LEVEL = 0.97;
-            item.setChecked(true);
-        }
-        else if (item.getItemId() == R.id.menu_nivel4) {
-            DIFFICULTY_LEVEL = 0.99;
-            item.setChecked(true);
-        }
-        else if (item.getItemId() == R.id.menu_nivel5) {
-            DIFFICULTY_LEVEL = 0.999;
-            item.setChecked(true);
-        }
-
-        return true;
+        return session.selectLevel(item) || super.onOptionsItemSelected(item);
     }
 
     /**
@@ -389,11 +292,16 @@ public class PrintLetterConsonantActivity extends AppCompatActivity {
         }
     }
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        session.saveState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     protected void onDestroy() {
+        if (session != null) session.close();
+        if (tfClassifier != null) tfClassifier.close();
         super.onDestroy();
-        if (tfClassifier instanceof ImageClassifier) {
-            ((ImageClassifier) tfClassifier).close(); // ✅ Liberar recursos
-        }
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
